@@ -120,7 +120,6 @@ Step 9: Select the hex file from the Kiel program folder and import the program 
 
 ## Kiel - Program  
 
-```
 #include <lpc214x.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -185,13 +184,12 @@ int main(void)
 {
 
 	LCD_INIT();
-	LCD_STRING("212221230049");//first line
+	LCD_STRING("Welcome to AI-DS");//first line
 	LCD_CMD(0xC0);
 	LCD_STRING("KEERTHIKA N");//second line
 
 	return 0;
 }
-```
 
 ## Proteus simulation 
 
