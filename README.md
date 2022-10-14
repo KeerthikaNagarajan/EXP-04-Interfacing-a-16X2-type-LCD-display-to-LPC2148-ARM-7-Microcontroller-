@@ -1,13 +1,10 @@
 # EXP-04-Interfacing a 16X2 type LCD display to LPC2148 ARM 7Microcontroller
 
-Name :
+Name : Keerthika Nagarajan
 
-Roll no :
+Roll no : 212221230049
 
-Date of experiment :
-
- 
-
+Date of experiment : 07.10.2022
 
 ## Interfacing a 16X2 type LCD display to LPC2148 ARM 7 Microcontroller 
 
@@ -123,22 +120,90 @@ Step 9: Select the hex file from the Kiel program folder and import the program 
 
 ## Kiel - Program  
 
+#include <lpc214x.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
 
+void delay_ms(uint16_t j) /* Function for delay in milliseconds  */
+{
+    uint16_t x,i;
+	for(i=0;i<j;i++)
+	{
+    for(x=0; x<6000; x++);    /* loop to generate 1 millisecond delay with Cclk = 60MHz */
+	}
+}
 
+void LCD_CMD(char command)
+{
+	IO0PIN = ( (IO0PIN & 0xFFFF00FF) | (command<<8) );
+	IO0SET = 0x00000040; /* EN = 1 */
+	IO0CLR = 0x00000030; /* RS = 0, RW = 0 */
+	delay_ms(2);
+	IO0CLR = 0x00000040; /* EN = 0, RS and RW unchanged(i.e. RS = RW = 0) */
+	delay_ms(5);
+}
 
+void LCD_INIT(void)
+{
+	IO0DIR = 0x0000FFF0; /* P0.8 to P0.15 LCD Data. P0.4,5,6 as RS RW and EN */
+	delay_ms(20);
+	LCD_CMD(0x38);  /* Initialize lcd */
+	LCD_CMD(0x0C);   /* Display on cursor off */
+	LCD_CMD(0x06);  /* Auto increment cursor */
+	LCD_CMD(0x01);   /* Display clear */
+	LCD_CMD(0x80);  /* First line first position */
+}
+
+void LCD_STRING (char* msg)
+{
+	uint8_t i=0;
+	while(msg[i]!=0)
+	{
+		IO0PIN = ( (IO0PIN & 0xFFFF00FF) | (msg[i]<<8) );
+		IO0SET = 0x00000050; /* RS = 1, , EN = 1 */
+		IO0CLR = 0x00000020; /* RW = 0 */
+		delay_ms(2);
+		IO0CLR = 0x00000040; /* EN = 0, RS and RW unchanged(i.e. RS = 1, RW = 0) */
+		delay_ms(5);
+		i++;
+	}
+}
+
+void LCD_CHAR (char msg)
+{
+		IO0PIN = ( (IO0PIN & 0xFFFF00FF) | (msg<<8) );
+		IO0SET = 0x00000050; /* RS = 1, , EN = 1 */
+		IO0CLR = 0x00000020; /* RW = 0 */
+		delay_ms(2);
+		IO0CLR = 0x00000040; /* EN = 0, RS and RW unchanged(i.e. RS = 1, RW = 0) */
+		delay_ms(5);
+}
+
+int main(void)
+{
+
+	LCD_INIT();
+	LCD_STRING("212221230049");//first line
+	LCD_CMD(0xC0);
+	LCD_STRING("KEERTHIKA N");//second line
+
+	return 0;
+}
 
 ## Proteus simulation 
 
+## BEFORE SIMULATION:
+<img width="588" alt="offex4" src="https://user-images.githubusercontent.com/93427089/195904097-c6aaa39e-e499-4c6a-b0f3-72e1f77f7580.png">
 
+## AFTER SIMULATION:
+<img width="588" alt="onex4" src="https://user-images.githubusercontent.com/93427089/195904238-4df890d1-9855-49e9-97b4-6d01e1639f54.png">
 
-
-##  layout Diagram 
-
-
+##  Layout Diagram 
+<img width="583" alt="blaex4" src="https://user-images.githubusercontent.com/93427089/195904262-185d4c0d-586d-4ed9-a342-cfdee0d601a5.png">
 
 ## Result :
-
-Interfaced an LCD with ARM microcontroller is executed and displayed the strings  
+Interfaced an LCD with ARM microcontroller is executed and displayed the strings.
 
  
 
